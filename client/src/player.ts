@@ -3,7 +3,7 @@ import { getInstrumentFilters, getInstrument, Instrument } from './instruments';
 import * as Samples from './samples';
 import { Track } from './track';
 import { compress } from './helper';
-import { refreshLatentSpace, generateNewTrack } from '.';
+import { generateNewTrack } from '.';
 
 /**
  * A class that plays a Track by synthesizing events in Tone.js.
@@ -38,61 +38,61 @@ class Player {
     }
   }
 
-   /** Recorder */
-   private _recorder: Tone.Recorder;
+  /** Recorder */
+  private _recorder: Tone.Recorder;
 
-   async downloadRecording() {
-     if (this._recorder) {
-       const recording = await this._recorder.stop();
-       const type = recording?.type?.split(';')[0]?.split('/')[1] || 'webm';
-       if (recording?.size > 0) {
-         const url = URL.createObjectURL(recording);
-         const anchor = document.createElement('a');
-         anchor.download = `lofi-record.${type}`;
-         anchor.href = url;
-         anchor.click();
-       }
-       this._recorder = null;
-     }
-   }
+  async downloadRecording() {
+    if (this._recorder) {
+      const recording = await this._recorder.stop();
+      const type = recording?.type?.split(';')[0]?.split('/')[1] || 'webm';
+      if (recording?.size > 0) {
+        const url = URL.createObjectURL(recording);
+        const anchor = document.createElement('a');
+        anchor.download = `lofi-record.${type}`;
+        anchor.href = url;
+        anchor.click();
+      }
+      this._recorder = null;
+    }
+  }
 
-   /** Whether the player is currently recording */
-   private _isRecording: boolean = false;
+  /** Whether the player is currently recording */
+  private _isRecording: boolean = false;
 
-   get isRecording() {
-     return this._isRecording;
-   }
+  get isRecording() {
+    return this._isRecording;
+  }
 
-   set isRecording(isRecording: boolean) {
-     if (this._isRecording !== isRecording) {
-       this._isRecording = isRecording;
-       if (!this._recorder) {
-         this._recorder = new Tone.Recorder();
-         this._recorder.start();
-       }
+  set isRecording(isRecording: boolean) {
+    if (this._isRecording !== isRecording) {
+      this._isRecording = isRecording;
+      if (!this._recorder) {
+        this._recorder = new Tone.Recorder();
+        this._recorder.start();
+      }
 
-       this.onRecordingStateChange();
-       if (this.gain) {
-         if (this._isRecording) {
-           this.gain.connect(this._recorder);
-         } else {
-           this.gain.disconnect(this._recorder);
-         }
-       }
+      this.onRecordingStateChange();
+      if (this.gain) {
+        if (this._isRecording) {
+          this.gain.connect(this._recorder);
+        } else {
+          this.gain.disconnect(this._recorder);
+        }
+      }
 
-       if (!this._isRecording) {
-         this.downloadRecording();
-       }
-     }
-   }
+      if (!this._isRecording) {
+        this.downloadRecording();
+      }
+    }
+  }
 
-   pauseRecording() {
-     this.isRecording = false;
-   }
+  pauseRecording() {
+    this.isRecording = false;
+  }
 
-   startRecording() {
-     this.isRecording = true;
-   }
+  startRecording() {
+    this.isRecording = true;
+  }
 
   /** Whether the player is currently loading */
   private _isLoading: boolean = false;
@@ -186,7 +186,7 @@ class Player {
 
     // if this is the last track and continuous mode is enabled, generate the next track
     if (this.repeat === RepeatMode.CONTINUOUS && this.currentPlayingIndex === this.playlist.length - 1) {
-      refreshLatentSpace();
+      //refreshLatentSpace();
       generateNewTrack();
     }
   }
