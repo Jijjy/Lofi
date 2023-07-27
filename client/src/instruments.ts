@@ -57,6 +57,7 @@ export const getInstrument = (instrument: Instrument) => {
       });
     }
 
+    case Instrument.BassGuitar:
     case Instrument.SoftPiano: {
       return new Tone.Sampler({
         urls: {
@@ -201,17 +202,17 @@ export const getInstrument = (instrument: Instrument) => {
       });
     }
 
-    case Instrument.BassGuitar: {
-      return new Tone.Sampler({
-        urls: {
-          E1: 'E.mp3',
-          A1: 'A.mp3',
-          C2: 'C.mp3'
-        },
-        baseUrl: `${BASE_URL}/guitar-bass/`,
-        volume: 0
-      });
-    }
+    // case Instrument.BassGuitar: {
+    //   return new Tone.Sampler({
+    //     urls: {
+    //       E1: 'E.mp3',
+    //       A1: 'A.mp3',
+    //       C2: 'C.mp3'
+    //     },
+    //     baseUrl: `${BASE_URL}/guitar-bass/`,
+    //     volume: 0
+    //   });
+    // }
 
     case Instrument.Synth: {
       return new Tone.PolySynth(Tone.Synth, {
