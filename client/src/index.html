@@ -13,14 +13,14 @@
 <body>
   <template id="template-track">
     <div class="flex">
-      <button class="play-button">Play</button>
+      <button class="play-button">▶</button>
       <input type="text" placeholder="tags" class="grow-1">
-      <button>❌</button>
+      <button class="remove-button btn-danger">✕</button>
     </div>
   </template>
 
   <div class="flex flex-down">
-    <div id="tracks-container" class="flex flex-down"></div>
+    <div id="tracks-container" class="flex flex-down grow-1"></div>
     <div class="flex">
       <button id="play-button">▶</button>
       <input id="seekbar" class="grow-1" type="range" min="0" max="0" value="0" />

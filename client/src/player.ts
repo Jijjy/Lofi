@@ -3,7 +3,7 @@ import { getInstrumentFilters, getInstrument, Instrument } from './instruments';
 import * as Samples from './samples';
 import { Track } from './track';
 import { compress } from './helper';
-import { generateNewTrack } from '.';
+//import { refreshLatentSpace, generateNewTrack } from '.';
 
 /**
  * A class that plays a Track by synthesizing events in Tone.js.
@@ -176,9 +176,13 @@ class Player {
     this.fillShuffleQueue();
   }
 
+  trackIndex(track: Track) {
+    return this.playlist.findIndex(t => t.title === track.title);
+  }
+
   /** Plays a specific track in the playlist */
-  playTrack(playlistIndex: number) {
-    this.currentPlayingIndex = playlistIndex;
+  playTrack(track: Track) {
+    this.currentPlayingIndex = this.trackIndex(track);
     this.onTrackChange();
     this.seek(0);
     this.stop();
@@ -187,7 +191,7 @@ class Player {
     // if this is the last track and continuous mode is enabled, generate the next track
     if (this.repeat === RepeatMode.CONTINUOUS && this.currentPlayingIndex === this.playlist.length - 1) {
       //refreshLatentSpace();
-      generateNewTrack();
+      //generateNewTrack();
     }
   }
 
@@ -317,7 +321,7 @@ class Player {
       Tone.Transport.start();
       this.seek(Tone.Transport.seconds);
     } else if (this.playlist.length > 0) {
-      this.playTrack(0);
+      this.playTrack(this.playlist[0]);
     }
   }
 
@@ -378,7 +382,7 @@ class Player {
     }
 
     if (nextTrackIndex !== null) {
-      this.playTrack(nextTrackIndex);
+      this.playTrack(this.playlist[nextTrackIndex]);
     }
   }
 
@@ -403,7 +407,7 @@ class Player {
     }
 
     if (nextTrackIndex !== null) {
-      this.playTrack(nextTrackIndex);
+      this.playTrack(this.playlist[nextTrackIndex]);
     } else {
       this.unload();
     }
@@ -421,7 +425,10 @@ class Player {
   }
 
   /** Deletes a track from the playlist */
-  deleteTrack(index: number) {
+  deleteTrack(track: Track) {
+    let index = this.playlist.findIndex(t => t.title === track.title);
+    if (index < 0)
+      return;
     this.playlist.splice(index, 1);
     this.updateLocalStorage();
     if (index === this.currentPlayingIndex) {

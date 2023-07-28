@@ -68,7 +68,7 @@ const generateButton = document.getElementById('generate-button') as HTMLButtonE
 export async function generateNewTrack() {
   generateButton.disabled = true;
 
-  const numberArray = [...new Array(100)].map(() => 4 - 2 * Math.random());
+  const numberArray = [...new Array(100)].map(() => 4 - 8 * randn());
 
   let params;
   try {
@@ -141,13 +141,26 @@ player.updateTrackDisplay = (seconds?: number, spectrum?: Float32Array) => {
 
 player.onTrackChange = () => { };
 player.updatePlaylistDisplay = function () {
-  player.playlist.forEach(t => {
-    let id = 'track-' + t.title.substring(1);
-    if (document.querySelector(id))
+  player.playlist.forEach((track, i) => {
+    let id = 'track-' + track.title.substring(1);
+    if (document.getElementById(id))
       return;
     let el = document.createElement('div');
     el.setAttribute('id', id);
+    el.classList.add('track');
+    el.setAttribute('title', track.title);
     el.innerHTML = document.querySelector('#template-track').innerHTML;
+    el.style.background = track.color;
+
+    el.querySelector('.remove-button').addEventListener('click', e => {
+      player.deleteTrack(track);
+      el.remove();
+    });
+
+    el.querySelector('.play-button').addEventListener('click', e => {
+      player.playTrack(track);
+    });
+
     document.querySelector('#tracks-container').appendChild(el);
   });
   console.log(player);
@@ -161,11 +174,10 @@ const playButton = document.getElementById('play-button');
 const volume = 0.5;
 player.getGain = () => volume;
 const updatePlayingState = () => {
+  playButton.innerHTML = player.isPlaying ? '| |' : '▶';
   if (player.isPlaying) {
-    playButton.classList.toggle('paused', true);
     audio.play();
   } else {
-    playButton.classList.toggle('paused', false);
     audio.pause();
   }
 };
