@@ -167,7 +167,7 @@ class Producer {
     // TODO: produce a more interesting intro
 
     // measure of silence
-    return 1;
+    return 0;
   }
 
   /** Produces the track's main part and returns the number of measures */
@@ -240,9 +240,8 @@ class Producer {
         }
         // bass line: on the first beat of every measure
         if (this.preset.bassLine) {
-          const rootNote = `${this.notesInScale[scaleDegree - 1]}${
-            1 + this.preset.bassLine.octaveShift
-          }`;
+          const rootNote = `${this.notesInScale[scaleDegree - 1]}${1 + this.preset.bassLine.octaveShift
+            }`;
           // get a random bass pattern
           const bassPatternNo = randomFromInterval(
             0,

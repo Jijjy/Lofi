@@ -31,4 +31,6 @@ export class OutputParams {
   chords: number[];
 
   melodies: number[][];
+
+  inputList: number[];
 }

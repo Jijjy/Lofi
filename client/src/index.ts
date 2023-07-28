@@ -65,10 +65,11 @@ if (playlistToLoad.length > 0) {
 
 // Generate button
 const generateButton = document.getElementById('generate-button') as HTMLButtonElement;
-export async function generateNewTrack() {
+export async function generateNewTrack(numberArray?: number[]) {
   generateButton.disabled = true;
 
-  const numberArray = [...new Array(100)].map(() => 4 - 8 * randn());
+  if (!numberArray)
+    numberArray = [...new Array(100)].map(() => randn());
 
   let params;
   try {
@@ -84,7 +85,7 @@ export async function generateNewTrack() {
   generateButton.disabled = false;
 }
 
-generateButton.addEventListener('click', generateNewTrack);
+generateButton.addEventListener('click', e => { generateNewTrack(); });
 
 /** Formats seconds into an MM:SS string */
 const formatTime = (seconds: number) => {
@@ -142,6 +143,7 @@ player.updateTrackDisplay = (seconds?: number, spectrum?: Float32Array) => {
 player.onTrackChange = () => { };
 player.updatePlaylistDisplay = function () {
   player.playlist.forEach((track, i) => {
+    console.log(track.outputParams);
     let id = 'track-' + track.title.substring(1);
     if (document.getElementById(id))
       return;
@@ -150,7 +152,7 @@ player.updatePlaylistDisplay = function () {
     el.classList.add('track');
     el.setAttribute('title', track.title);
     el.innerHTML = document.querySelector('#template-track').innerHTML;
-    el.style.background = track.color;
+    el.style.background = track.gradient;
 
     el.querySelector('.remove-button').addEventListener('click', e => {
       player.deleteTrack(track);
@@ -159,6 +161,11 @@ player.updatePlaylistDisplay = function () {
 
     el.querySelector('.play-button').addEventListener('click', e => {
       player.playTrack(track);
+    });
+
+    el.querySelector('.variant-button').addEventListener('click', e => {
+      let params = [...track.outputParams.inputList].map(n => n + 0.5 * randn());
+      generateNewTrack(params);
     });
 
     document.querySelector('#tracks-container').appendChild(el);

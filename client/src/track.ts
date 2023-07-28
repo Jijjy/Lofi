@@ -27,6 +27,8 @@ class Track {
   /** Whether to swing eighth notes */
   swing: boolean = false;
 
+  inputList: number[];
+
   /** Number of measures; each measure contains four beats */
   numMeasures: number = 60;
 
@@ -52,6 +54,11 @@ class Track {
 
   /** Color of cover */
   color: string;
+
+  get gradient() {
+    let hues = this.outputParams.inputList.map(v => 180 + Math.atan(v) * 360 / Math.PI);
+    return `linear-gradient(-45deg, ${hues.map(h => `hsl( ${h} 100% 50% )`).join()})`
+  }
 
   /** The output params that generated this track */
   outputParams: OutputParams;
